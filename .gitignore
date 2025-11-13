@@ -22,3 +22,64 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.next
+pom.xml.bak
+pom.xml.versions
+pom.xml.releaseBackup
+poms/
+*.maven-artifact
+maven-status/
+archetype-resources/
+release.properties
+cobertura.ser
+
+# Gradle
+build/
+.gradle/
+# Gradle store of downloaded dependencies
+.m2/
+.gradle-cache/
+
+# Compiled Java class files
+*.class
+
+# Log file
+*.log
+logs/
+
+# SQL (optional, ignore generated sql files)
+*.sql.generated
+
+# Eclipse
+.classpath
+.project
+.settings/
+.sts4/
+temp/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Spring Boot devtools restart log file
+*.restart.log
+
+# Mac specific files
+.DS_Store
+
+# Misc
+hs_err_pid*
