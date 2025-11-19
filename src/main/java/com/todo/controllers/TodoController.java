@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.todo.dtos.TodoRequestDto;
 import com.todo.entities.Todo;
 import com.todo.services.TodoService;
 import com.todo.services.UserService;
@@ -36,12 +37,23 @@ public class TodoController {
 			return ResponseUtils.error(e.getMessage());
 		}
 	}
+	
+	@GetMapping("/{uid}")
+	public ResponseEntity<?> getTodosByUserId(@PathVariable(name = "uid") int uid) {
+
+		try {
+			List<Todo> todoList = ts.getAllTodosByUserID(uid);
+			return ResponseEntity.ok(todoList);
+		} catch (Exception e) {
+			return ResponseUtils.error(e.getMessage());
+		}
+	}
 
 	@PostMapping("")
-	public ResponseEntity<?> saveATodo(@RequestBody Todo todo) {
+	public ResponseEntity<?> saveATodo(@RequestBody TodoRequestDto todoDto) {
 		Todo savedTodo;
 		try {
-					savedTodo = ts.save(todo);
+					savedTodo = ts.save(todoDto);
 				}
 		catch (Exception e) {
 			return ResponseUtils.error(e.getMessage());

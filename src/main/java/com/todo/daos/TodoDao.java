@@ -8,7 +8,7 @@ import com.todo.entities.Todo;
 
 public interface TodoDao extends JpaRepository<Todo, Integer> {
 
-	List<Todo> findAllByUserID(int userID);
-	Todo findAllByUserIDAndTitle(int userID, String title);
+	List<Todo> findAllByUserId(int userId);
+	Todo findAllByUserIdAndTitle(int userId, String title);
 
 }

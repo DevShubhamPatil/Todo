@@ -19,13 +19,13 @@ public class TodoDaoTests {
 	
 	@Test
 	public void getAllByUserIDTest() {
-		List<Todo> list = todoDao.findAllByUserID(1);
+		List<Todo> list = todoDao.findAllByUserId(1);
 		list.forEach(System.out::println);
 	}
 	
 	@Test
 	public void getAllByUserIDAndTitleTest() {
-		Todo todo = todoDao.findAllByUserIDAndTitle(1, "Workout session");
+		Todo todo = todoDao.findAllByUserIdAndTitle(1, "Workout session");
 		assertNotNull(todo);
 	}
 }

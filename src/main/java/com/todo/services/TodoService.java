@@ -7,14 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.todo.daos.TodoDao;
+import com.todo.daos.UserDao;
+import com.todo.dtos.TodoRequestDto;
 import com.todo.entities.Todo;
+import com.todo.entities.User;
+import com.todo.utils.MapperUtil;
 
 @Service
 public class TodoService {
 
 	@Autowired
 	private TodoDao td;
-
+	@Autowired
+	private UserDao ud;
+	@Autowired
+	private MapperUtil mapper;
 	public List<Todo> getAllTodos() {
 
 		List<Todo> list = td.findAll();
@@ -23,12 +30,30 @@ public class TodoService {
 		return null;
 	}
 
-	public Todo save(Todo t) throws Exception {
-		Todo availableTodo = td.findAllByUserIDAndTitle(t.getUserID(), t.getTitle());
-		if (availableTodo != null)
+	public List<Todo> getAllTodosByUserID(int uid) {
+
+		List<Todo> list = td.findAllByUserId(uid);
+		if (!list.isEmpty())
+			return list;
+		return null;
+	}
+
+	public Todo save(TodoRequestDto t) throws Exception {
+		Todo availableTodo = td.findAllByUserIdAndTitle(t.getUserID(), t.getTitle());
+		if (availableTodo != null) {
+			System.out.println("throwing exception ");
 			throw new Exception("Todo For Current user with title: ** " + t.getTitle()
 					+ " ** Already Exists. please create Unique todo");
-		Todo st = td.save(t);
+		}
+		Todo todo = mapper.TodoRequestDtoToTodoEntity(t);
+		System.out.println("todo from mapper is\n "+todo);
+		
+		Optional<User> userOptional = ud.findById(t.getUserID());
+		if(userOptional.isPresent())
+			todo.setUser(userOptional.get());
+		else
+			throw new Exception("no user exists with id: " + t.getUserID());
+		Todo st = td.save(todo);
 		if (st != null)
 			return st;
 		return null;
@@ -42,25 +67,24 @@ public class TodoService {
 		} else
 			return null;
 	}
-	
+
 	public void deleteByIds(List<Integer> ids) {
 		td.deleteAllById(ids);
 	}
-	
+
 	public Todo update(Todo t) throws Exception {
 		Optional<Todo> oTodo = td.findById(t.getId());
-		if(oTodo.isPresent()) {
-			Todo t1 =  oTodo.get();
-			if(t.getTitle() != null)
-			t1.setTitle(t.getTitle());
+		if (oTodo.isPresent()) {
+			Todo t1 = oTodo.get();
+			if (t.getTitle() != null)
+				t1.setTitle(t.getTitle());
 			t1.setDescription(t.getDescription());
-			if(t.getTarget_date() != null)
-			t1.setTarget_date(t.getTarget_date());
+			if (t.getTarget_date() != null)
+				t1.setTarget_date(t.getTarget_date());
 			return td.save(t1);
-		}
-		else
-			throw new Exception("No TODO Entity found to update, ID: "+t.getId());
-		
+		} else
+			throw new Exception("No TODO Entity found to update, ID: " + t.getId());
+
 	}
 
 }
