@@ -1,26 +1,33 @@
 package com.todo.dtos;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.springframework.security.authentication.jaas.AuthorityGranter;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.todo.entities.Todo;
 import com.todo.entities.User;
 
 import jakarta.persistence.Column;
 
-public class UserDto {
+public class UserDto{
 
 	private int id;
 	private String firstName;
 	private String lastName;
 	private String email;
-	@JsonIgnore
 	private String password;
 	private List<Todo> todolist;
 
 	public User toUser() {
 		User user = new User();
-
 		user.setId(this.getId());
 		user.setFirstName(this.getFirstName());
 		user.setLastName(this.getLastName());
@@ -94,6 +101,7 @@ public class UserDto {
 	}
 
 	public String getPassword() {
+		System.out.println(password);
 		return password;
 	}
 
@@ -103,7 +111,7 @@ public class UserDto {
 
 	@Override
 	public String toString() {
-		return "userDto [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
+		return "userDto [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", password ="+ password+"]";
 	}
 
 }

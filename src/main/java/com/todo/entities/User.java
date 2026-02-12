@@ -1,6 +1,14 @@
 package com.todo.entities;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
+
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -16,7 +24,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails{
 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
@@ -108,6 +116,18 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		
+		return Stream.of("READ","WRITE","EXECUTE").map(s-> new SimpleGrantedAuthority(s)).toList();
+	}
+
+	@Override
+	public String getUsername() {
+		return getEmail();
 	}
 
 }

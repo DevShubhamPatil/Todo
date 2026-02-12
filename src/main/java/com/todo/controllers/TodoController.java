@@ -3,7 +3,11 @@ package com.todo.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,14 +15,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.todo.dtos.TodoRequestDto;
 import com.todo.entities.Todo;
 import com.todo.services.TodoService;
 import com.todo.services.UserService;
+import com.todo.utils.MapperUtil;
 import com.todo.utils.ResponseUtils;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/todo")
 public class TodoController {
@@ -26,6 +33,7 @@ public class TodoController {
 	UserService us;
 	@Autowired
 	TodoService ts;
+	
 
 	@GetMapping("/all")
 	public ResponseEntity<?> getTodos() {
@@ -54,11 +62,12 @@ public class TodoController {
 		Todo savedTodo;
 		try {
 					savedTodo = ts.save(todoDto);
+					List<Todo> todoList = ts.getAllTodosByUserID(savedTodo.getUser().getId());
+					return ResponseEntity.ok(todoList);
 				}
 		catch (Exception e) {
 			return ResponseUtils.error(e.getMessage());
 		}
-		return ResponseUtils.success(savedTodo);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -90,10 +99,22 @@ public class TodoController {
 		Todo updated ;
 		try {
 			updated = ts.update(todo);
+			List<Todo> todoList = ts.getAllTodosByUserID(updated.getUser().getId());
+			return ResponseEntity.ok(todoList);
 		}catch(Exception e) {
 			return ResponseUtils.error(e.getMessage());
 		}
-		return ResponseUtils.success(updated);
 	}
 	
+	
+	@GetMapping("/page")
+	public ResponseEntity<?> getpage(Pageable p){
+//		Pageable p = PageRequest.of(page, size);
+//		Pageable p = PageRequest.of(page, size, );
+		Page<TodoRequestDto> todoPage = ts.getAllTodos(p);
+		if(todoPage.isEmpty())
+		return ResponseUtils.error("No Page Found");
+		return ResponseUtils.success(todoPage);
+		
+	}
 }

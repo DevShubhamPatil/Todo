@@ -9,6 +9,8 @@ import com.todo.entities.Todo;
 @Mapper(componentModel = "spring")
 public interface MapperUtil {
 	
-	Todo TodoRequestDtoToTodoEntity(TodoRequestDto todoDto);
+	Todo toTodoEntity(TodoRequestDto todoDto);
+	TodoRequestDto toTodoRequestDto(Todo todo);
 
 }
+ 

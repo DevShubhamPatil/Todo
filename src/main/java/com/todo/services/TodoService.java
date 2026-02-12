@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.todo.daos.TodoDao;
@@ -45,7 +48,7 @@ public class TodoService {
 			throw new Exception("Todo For Current user with title: ** " + t.getTitle()
 					+ " ** Already Exists. please create Unique todo");
 		}
-		Todo todo = mapper.TodoRequestDtoToTodoEntity(t);
+		Todo todo = mapper.toTodoEntity(t);
 		System.out.println("todo from mapper is\n "+todo);
 		
 		Optional<User> userOptional = ud.findById(t.getUserID());
@@ -85,6 +88,13 @@ public class TodoService {
 		} else
 			throw new Exception("No TODO Entity found to update, ID: " + t.getId());
 
+	}
+	
+	public Page<TodoRequestDto> getAllTodos(Pageable p){
+		Page<Todo> page = td.findAll(p);
+		Page<TodoRequestDto> list = page.map(todo -> mapper.toTodoRequestDto(todo) );
+		
+		return list;
 	}
 
 }
